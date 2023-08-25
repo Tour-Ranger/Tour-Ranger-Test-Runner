@@ -1,0 +1,21 @@
+plugins {
+    id 'groovy'
+}
+
+group 'org.tourranger'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // groovy
+    implementation 'org.apache.groovy:groovy:4.0.14'
+    // ngrinder
+    implementation 'org.ngrinder:ngrinder-groovy:3.5.8'
+}
+
+test {
+    useJUnitPlatform()
+}
