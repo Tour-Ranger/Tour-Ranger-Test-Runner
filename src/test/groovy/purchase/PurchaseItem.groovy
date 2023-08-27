@@ -38,6 +38,9 @@ class PurchaseItem {
         HTTPRequestControl.setConnectionTimeout(50) // 50 ms
         test = new GTest(1, "GetItemTest")
         request = new HTTPRequest()
+
+        // Set header data
+        headers.put("Content-Type", "application/json")
         grinder.logger.info("before process.")
     }
 
