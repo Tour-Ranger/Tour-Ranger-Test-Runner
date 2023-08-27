@@ -26,6 +26,43 @@ import java.sql.SQLException;
 
 @RunWith(GrinderRunner)
 class TourItemPage {
+    public static GTest test
+    public static HTTPRequest request
+    public static Map<String, String> headers = [:]
+    public static Map<String, Object> params = [:]
 
+    public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
+
+    @BeforeProcess
+    public static void beforeProcess() {
+        HTTPRequestControl.setConnectionTimeout(120) // item(20) + image(100) = 120 ms
+        test = new GTest(1, "GetImageListTest")
+        request = new HTTPRequest()
+        grinder.logger.info("before process.")
+    }
+
+    @BeforeThread
+    public void beforeThread() {
+        test.record(this, "test")
+        grinder.statistics.delayReports = true
+        grinder.logger.info("before thread.")
+    }
+
+    @Before
+    public void before() {
+        request.setHeaders(headers)
+        grinder.logger.info("before. init headers")
+    }
+
+    @Test
+    public void test() {
+        HTTPResponse response = request.GET("http://${NGRINDER_HOSTNAME}:1010/items/1")
+
+        if (response.statusCode == 301 || response.statusCode == 302) {
+            grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
+        } else {
+            assertThat(response.statusCode, is(200))
+        }
+    }
 }
 
