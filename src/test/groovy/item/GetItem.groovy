@@ -26,39 +26,17 @@ import java.sql.SQLException;
 
 @RunWith(GrinderRunner)
 class GetItem {
-
     public static GTest test
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
     public static Map<String, Object> params = [:]
 
-    // 데이터베이스 연결 구성
-    public static dbUrl = System.getenv("DB_URL");
-    public static dbUser = System.getenv("DB_USER");
-    public static dbPw = System.getenv("DB_PASSWORD");
-    def connection = DriverManager.getConnection(dbUrl, dbUser, dbPw)
-
     public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
-
-
-    @BeforeClass
-    public static void beforeClass() {
-        // JDBC 드라이버 자동 로딩 및 데이터베이스 연결
-        try {
-            Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPw);
-            // 연결된 데이터베이스 사용
-            // ...
-            connection.close(); // 연결 닫기
-        } catch (SQLException e) {
-            // 연결 실패 또는 오류 처리
-            e.printStackTrace();
-        }
-    }
 
     @BeforeProcess
     public static void beforeProcess() {
-        HTTPRequestControl.setConnectionTimeout(300000)
-        test = new GTest(1, "GTest1")
+        HTTPRequestControl.setConnectionTimeout(20) // 20 ms
+        test = new GTest(1, "GetItemTest")
         request = new HTTPRequest()
         grinder.logger.info("before process.")
     }
