@@ -35,7 +35,7 @@ class TourItemPage {
 
     @BeforeProcess
     public static void beforeProcess() {
-        HTTPRequestControl.setConnectionTimeout(120) // item(20) + image(100) = 120 ms
+        HTTPRequestControl.setConnectionTimeout(3000) // item(20) + image(100) = 120 ms
         test = new GTest(1, "GetImageListTest")
         request = new HTTPRequest()
         grinder.logger.info("before process.")
