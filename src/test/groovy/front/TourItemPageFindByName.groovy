@@ -25,7 +25,7 @@ import java.sql.SQLException;
 
 
 @RunWith(GrinderRunner)
-class TourItemPageNgrokStatic {
+class TourItemPageFindByName {
     public static GTest test
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
@@ -56,7 +56,7 @@ class TourItemPageNgrokStatic {
 
     @Test
     public void test() {
-        HTTPResponse response = request.GET("https://cosmic-innocent-kid.ngrok-free.app/items/1")
+        HTTPResponse response = request.GET("http://{NGRINDER_HOSTNAME}:1010/tour-ranger/front/items?itemName=★[오전출발]도쿄%20에어텔%20/%202박3일%20/%20[5144]%20뉴%20스타%20이케부쿠로%20/%20티웨이항공★")
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
