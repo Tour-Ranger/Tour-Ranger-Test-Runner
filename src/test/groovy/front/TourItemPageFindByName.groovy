@@ -19,6 +19,7 @@ import org.ngrinder.http.HTTPRequest
 import org.ngrinder.http.HTTPRequestControl
 import org.ngrinder.http.HTTPResponse
 
+import java.net.URLEncoder
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ class TourItemPageFindByName {
     public static GTest test
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
-    public static Map<String, Object> params = ["itemName":"★[오전출발]도쿄%20에어텔%20/%202박3일%20/%20[5144]%20뉴%20스타%20이케부쿠로%20/%20티웨이항공★"]
+    public static Map<String, String> params = ["itemName": "★[오전출발]도쿄 에어텔 / 2박3일 / [5144] 뉴 스타 이케부쿠로 / 티웨이항공★"]
 
     public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
 
@@ -56,12 +57,19 @@ class TourItemPageFindByName {
 
     @Test
     public void test() {
-        HTTPResponse response = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items",params)
+        def paramsKeySet = params.keySet()
+        def paramsValue =params.get(paramsKeySet[0])
+        def encodedString = URLEncoder.encode(paramsValue, "UTF-8")
 
-        if (response.statusCode == 301 || response.statusCode == 302) {
-            grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
+        HTTPResponse response1 = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items?${paramsKeySet[0]}=${encodedString}")
+
+        if (response1.statusCode == 301 || response1.statusCode == 302) {
+            grinder.logger.warn("Warning. The response1 may not be correct. The response1 code was {}.", response1.statusCode)
         } else {
-            assertThat(response.statusCode, is(200))
+            assertThat(response1.statusCode, is(200))
         }
+
+        // grinder.logger.info("body: {}", response1.bodyText);
+        grinder.logger.info("Test End")
     }
 }
