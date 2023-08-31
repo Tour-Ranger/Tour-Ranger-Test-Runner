@@ -36,7 +36,7 @@ class PurchaseItem {
     @BeforeProcess
     public static void beforeProcess() {
         HTTPRequestControl.setConnectionTimeout(50) // 50 ms
-        test = new GTest(1, "GetItemTest")
+        test = new GTest(1, "PurchaseItemTest")
         request = new HTTPRequest()
 
         // Set header data
