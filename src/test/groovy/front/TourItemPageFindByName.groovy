@@ -1,5 +1,9 @@
 package front
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.concurrent.ThreadLocalRandom
+
 import static net.grinder.script.Grinder.grinder
 import static org.junit.Assert.*
 import static org.hamcrest.Matchers.*
@@ -30,16 +34,26 @@ class TourItemPageFindByName {
     public static GTest test
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
-    public static Map<String, String> params = ["itemName": "★[오전출발]도쿄 에어텔 / 2박3일 / [5144] 뉴 스타 이케부쿠로 / 티웨이항공★"]
+    public static Map<String, String> params = [:]
 
+    // system env.
     public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
+
+    // file
+    public static String requestFile = "src/test/resources/tourItemPage_findByName.txt"
+    public static List<String> requests = new ArrayList<>()
+    public static String body = ""
 
     @BeforeProcess
     public static void beforeProcess() {
-        HTTPRequestControl.setConnectionTimeout(3000) // item(20) + image(100) = 120 ms
+        grinder.logger.info("before process.")
+
+        grinder.logger.info("request file")
+        requests = Files.readAllLines(Paths.get(requestFile))
+
+        HTTPRequestControl.setConnectionTimeout(3000) // 3000ms = 3초
         test = new GTest(1, "TourItemPage-FindByName")
         request = new HTTPRequest()
-        grinder.logger.info("before process.")
     }
 
     @BeforeThread
@@ -51,24 +65,23 @@ class TourItemPageFindByName {
 
     @Before
     public void before() {
-        request.setHeaders(headers)
         grinder.logger.info("before. init headers")
+        request.setHeaders(headers)
+        grinder.logger.info("before. get request")
+        body = requests.get(ThreadLocalRandom.current().nextInt(requests.size()))
+        print(body)
     }
 
     @Test
     public void test() {
-        def paramsKeySet = params.keySet()
-        def paramsValue =params.get(paramsKeySet[0])
-        def encodedString = URLEncoder.encode(paramsValue, "UTF-8")
-
-        HTTPResponse response1 = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items?${paramsKeySet[0]}=${encodedString}")
+        def encodedUrl = URLEncoder.encode(body, "UTF-8")
+        HTTPResponse response1 = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items?itemName=${encodedUrl}")
 
         if (response1.statusCode == 301 || response1.statusCode == 302) {
             grinder.logger.warn("Warning. The response1 may not be correct. The response1 code was {}.", response1.statusCode)
         } else {
             assertThat(response1.statusCode, is(200))
         }
-
         // grinder.logger.info("body: {}", response1.bodyText);
         grinder.logger.info("Test End")
     }
