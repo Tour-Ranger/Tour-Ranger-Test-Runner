@@ -45,8 +45,8 @@ class TourItemPage {
     public static void beforeProcess() {
         grinder.logger.info("before process.")
 
-        HTTPRequestControl.setConnectionTimeout(3000) // 3000ms = 3초
-        test = new GTest(1, "TourItemPage-FindByName")
+        HTTPRequestControl.setConnectionTimeout(10000) // 10000ms = 10초
+        test = new GTest(1, "TourItemPage-FindById")
         request = new HTTPRequest()
     }
 
@@ -67,7 +67,7 @@ class TourItemPage {
 
     @Test
     public void test() {
-        HTTPResponse response = request.GET("http://localhost:1010/tour-ranger/front/items/${randomNum}")
+        HTTPResponse response = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items/${randomNum}")
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
