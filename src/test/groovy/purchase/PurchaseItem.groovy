@@ -1,5 +1,9 @@
 package purchase
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.concurrent.ThreadLocalRandom
+
 import static net.grinder.script.Grinder.grinder
 import static org.junit.Assert.*
 import static org.hamcrest.Matchers.*
@@ -29,19 +33,27 @@ class PurchaseItem {
     public static GTest test
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
-    public static String body = "{\n\"email\":\"email1@email.com\"}"
+
+    // file
+    public static String requestFile = "resources/userEmail.txt"
+    public static List<String> requests = new ArrayList<>()
+    public static String body = ""
 
     public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
 
     @BeforeProcess
     public static void beforeProcess() {
-        HTTPRequestControl.setConnectionTimeout(50) // 50 ms
+        grinder.logger.info("before process.")
+
+        grinder.logger.info("request file")
+        requests = Files.readAllLines(Paths.get(requestFile))
+
+        HTTPRequestControl.setConnectionTimeout(2000) // 50 ms
         test = new GTest(1, "PurchaseItemTest")
         request = new HTTPRequest()
 
-        // Set header data
+// Set header data
         headers.put("Content-Type", "application/json")
-        grinder.logger.info("before process.")
     }
 
     @BeforeThread
@@ -53,13 +65,17 @@ class PurchaseItem {
 
     @Before
     public void before() {
-        request.setHeaders(headers)
         grinder.logger.info("before. init headers")
+        request.setHeaders(headers)
+        grinder.logger.info("before. get request")
+        body = "{\n\"email\":\"" + requests.get(ThreadLocalRandom.current().nextInt(requests.size())) + "\"}"
+        print(body)
     }
+
 
     @Test
     public void test() {
-        HTTPResponse response = request.POST("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/purchases/1", body.getBytes())
+        HTTPResponse response = request.POST("http://localhost:8080/tour-ranger/purchases/1", body.getBytes())
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
