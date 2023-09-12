@@ -31,5 +31,71 @@ import java.sql.SQLException;
 
 @RunWith(GrinderRunner)
 class PurchaseItemAtTourItemPage {
+    public static GTest test
+    public static HTTPRequest request
+    public static Map<String, String> headers = [:]
 
+    // file
+    // public static String requestFile = "src/test/resources/userEmail.txt" // intelliJ test
+    public static String requestFile = "resources/userEmail.txt" // ngrinder test
+    public static List<String> requests = new ArrayList<>()
+    public static String body = ""
+
+    public static TOURRANGER_HOSTNAME = System.getenv("TOURRANGER_HOSTNAME");
+
+    @BeforeProcess
+    public static void beforeProcess() {
+        grinder.logger.info("before process.")
+
+        grinder.logger.info("request file")
+        requests = Files.readAllLines(Paths.get(requestFile))
+
+        HTTPRequestControl.setConnectionTimeout(300) // 300 ms
+        test = new GTest(1, "PurchaseItemAtTourItemPage")
+        request = new HTTPRequest()
+
+        // Set header data
+        headers.put("Content-Type", "application/json")
+    }
+
+    @BeforeThread
+    public void beforeThread() {
+        test.record(this, "test")
+        grinder.statistics.delayReports = true
+        grinder.logger.info("before thread.")
+    }
+
+    @Before
+    public void before() {
+        grinder.logger.info("before. init headers")
+        request.setHeaders(headers)
+        grinder.logger.info("before. get request")
+        body = "{\n\"email\":\"" + requests.get(ThreadLocalRandom.current().nextInt(requests.size())) + "\"}"
+        print(body)
+    }
+
+    @Test
+    public void getTourItemPage() {
+        print("test: getTourItemPage")
+
+        HTTPResponse response = request.GET("${TOURRANGER_HOSTNAME}/tour-ranger/front/items/1")
+        if (response.statusCode == 301 || response.statusCode == 302) {
+            grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
+        } else {
+            assertThat(response.statusCode, is(200))
+        }
+        print("조회 성공")
+    }
+
+    @Test
+    public void postPurchaseItem() {
+        print("test: postPurchaseItem")
+
+        HTTPResponse response = request.POST("${TOURRANGER_HOSTNAME}/tour-ranger/purchases/1", body.getBytes())
+        if (response.statusCode == 301 || response.statusCode == 302) {
+            grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
+        } else {
+            assertThat(response.statusCode, is(200))
+        }
+    }
 }
