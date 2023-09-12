@@ -31,7 +31,8 @@ import java.sql.SQLException;
 
 @RunWith(GrinderRunner)
 class PurchaseItemAtTourItemPage {
-    public static GTest test
+    public static GTest test1
+    public static GTest test2
     public static HTTPRequest request
     public static Map<String, String> headers = [:]
 
@@ -51,7 +52,8 @@ class PurchaseItemAtTourItemPage {
         requests = Files.readAllLines(Paths.get(requestFile))
 
         HTTPRequestControl.setConnectionTimeout(300) // 300 ms
-        test = new GTest(1, "PurchaseItemAtTourItemPage")
+        test1 = new GTest(1, "GET /tour-ranger/front/items/{itemId}")
+        test2 = new GTest(2, "POST /tour-ranger/purchases/{itemId}")
         request = new HTTPRequest()
 
         // Set header data
@@ -60,7 +62,8 @@ class PurchaseItemAtTourItemPage {
 
     @BeforeThread
     public void beforeThread() {
-        test.record(this, "test")
+        test1.record(this, "test1_getTourItemPage")
+        test2.record(this, "test2_postPurchaseItem")
         grinder.statistics.delayReports = true
         grinder.logger.info("before thread.")
     }
@@ -75,7 +78,7 @@ class PurchaseItemAtTourItemPage {
     }
 
     @Test
-    public void getTourItemPage() {
+    public void test1_getTourItemPage() {
         print("test: getTourItemPage")
 
         HTTPResponse response = request.GET("${TOURRANGER_HOSTNAME}/tour-ranger/front/items/1")
@@ -88,7 +91,7 @@ class PurchaseItemAtTourItemPage {
     }
 
     @Test
-    public void postPurchaseItem() {
+    public void test2_postPurchaseItem() {
         print("test: postPurchaseItem")
 
         HTTPResponse response = request.POST("${TOURRANGER_HOSTNAME}/tour-ranger/purchases/1", body.getBytes())
