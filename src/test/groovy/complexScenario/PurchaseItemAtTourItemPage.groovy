@@ -37,8 +37,8 @@ class PurchaseItemAtTourItemPage {
     public static Map<String, String> headers = [:]
 
     // file
-    // public static String requestFile = "src/test/resources/userEmail.txt" // intelliJ test
-    public static String requestFile = "resources/userEmail.txt" // ngrinder test
+    public static String requestFile = "src/test/resources/userEmail.txt" // intelliJ test
+    // public static String requestFile = "resources/userEmail.txt" // ngrinder test
     public static List<String> requests = new ArrayList<>()
     public static String body = ""
 
