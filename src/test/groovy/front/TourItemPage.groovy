@@ -36,7 +36,7 @@ class TourItemPage {
     public static Map<String, Object> params = [:]
 
     // system env.
-    public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
+    public static TOURRANGER_HOSTNAME = System.getenv("TOURRANGER_HOSTNAME");
     // random
     def randomNum = 0
     public static final TABLE_COUNT = 10485749;
@@ -67,7 +67,7 @@ class TourItemPage {
 
     @Test
     public void test() {
-        HTTPResponse response = request.GET("http://${NGRINDER_HOSTNAME}:1010/tour-ranger/front/items/${randomNum}")
+        HTTPResponse response = request.GET("${TOURRANGER_HOSTNAME}/tour-ranger/front/items/${randomNum}")
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
