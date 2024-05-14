@@ -48,7 +48,7 @@ class PurchaseItem {
         grinder.logger.info("request file")
         requests = Files.readAllLines(Paths.get(requestFile))
 
-        HTTPRequestControl.setConnectionTimeout(2000) // 50 ms
+        HTTPRequestControl.setConnectionTimeout(2000) // unit: ms
         test = new GTest(1, "PurchaseItemTest")
         request = new HTTPRequest()
 
