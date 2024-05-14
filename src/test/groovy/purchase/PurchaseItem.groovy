@@ -52,7 +52,7 @@ class PurchaseItem {
         test = new GTest(1, "PurchaseItemTest")
         request = new HTTPRequest()
 
-// Set header data
+    // Set header data
         headers.put("Content-Type", "application/json")
     }
 
