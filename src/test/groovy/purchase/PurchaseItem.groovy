@@ -39,7 +39,7 @@ class PurchaseItem {
     public static List<String> requests = new ArrayList<>()
     public static String body = ""
 
-    public static NGRINDER_HOSTNAME = System.getenv("TOURRANGER_HOSTNAME");
+    public static TOURRANGER_HOSTNAME = System.getenv("TOURRANGER_HOSTNAME");
 
     @BeforeProcess
     public static void beforeProcess() {
