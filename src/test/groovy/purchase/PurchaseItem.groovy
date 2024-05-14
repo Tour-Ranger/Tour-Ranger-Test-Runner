@@ -75,7 +75,7 @@ class PurchaseItem {
 
     @Test
     public void test() {
-        HTTPResponse response = request.POST("http://localhost:8080/tour-ranger/purchases/1", body.getBytes())
+        HTTPResponse response = request.POST("NGRINDER_HOSTNAME/purchases/1", body.getBytes())
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
