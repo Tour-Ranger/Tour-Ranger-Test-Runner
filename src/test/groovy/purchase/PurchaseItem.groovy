@@ -39,7 +39,7 @@ class PurchaseItem {
     public static List<String> requests = new ArrayList<>()
     public static String body = ""
 
-    public static NGRINDER_HOSTNAME = System.getenv("NGRINDER_HOSTNAME");
+    public static NGRINDER_HOSTNAME = System.getenv("TOURRANGER_HOSTNAME");
 
     @BeforeProcess
     public static void beforeProcess() {
@@ -75,7 +75,7 @@ class PurchaseItem {
 
     @Test
     public void test() {
-        HTTPResponse response = request.POST("NGRINDER_HOSTNAME/purchases/1", body.getBytes())
+        HTTPResponse response = request.POST("${TOURRANGER_HOSTNAME}/purchases/1", body.getBytes())
 
         if (response.statusCode == 301 || response.statusCode == 302) {
             grinder.logger.warn("Warning. The response may not be correct. The response code was {}.", response.statusCode)
